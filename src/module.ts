@@ -1,8 +1,10 @@
-import { GenericDatasource } from './datasource';
-import { GenericDatasourceQueryCtrl } from './query_ctrl';
+import { DataSourcePlugin } from '@grafana/ui';
 
-class GenericConfigCtrl {
-  static templateUrl = 'partials/config.html';
-}
+import { CSVDataSource } from './CSVDataSource';
+import { CSVConfigEditor } from './CSVConfigEditor';
+import { CSVQueryEditor } from './CSVQueryEditor';
+import { CSVOptions, CSVQuery } from './types';
 
-export { GenericDatasource as Datasource, GenericDatasourceQueryCtrl as QueryCtrl, GenericConfigCtrl as ConfigCtrl };
+export const plugin = new DataSourcePlugin<CSVDataSource, CSVQuery, CSVOptions>(CSVDataSource)
+  .setConfigEditor(CSVConfigEditor)
+  .setQueryEditor(CSVQueryEditor);

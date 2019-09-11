@@ -2,6 +2,7 @@ package grafana
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"time"
@@ -16,11 +17,12 @@ type TimeRange struct {
 }
 
 type Datasource struct {
-	ID    int64
-	OrgID int64
-	Name  string
-	Type  string
-	URL   string
+	ID       int64
+	OrgID    int64
+	Name     string
+	Type     string
+	URL      string
+	JsonData json.RawMessage
 }
 
 type Point struct {
@@ -66,17 +68,14 @@ func (p *datasourcePlugin) Query(ctx context.Context, req *datasource.Datasource
 		To:   time.Unix(0, req.TimeRange.FromEpochMs*int64(time.Millisecond)),
 	}
 
-	fmt.Fprintf(os.Stderr, "%+v", tr)
-
 	dsi := Datasource{
-		ID:    req.Datasource.Id,
-		OrgID: req.Datasource.OrgId,
-		Name:  req.Datasource.Name,
-		Type:  req.Datasource.Type,
-		URL:   req.Datasource.Url,
+		ID:       req.Datasource.Id,
+		OrgID:    req.Datasource.OrgId,
+		Name:     req.Datasource.Name,
+		Type:     req.Datasource.Type,
+		URL:      req.Datasource.Url,
+		JsonData: json.RawMessage(req.Datasource.JsonData),
 	}
-
-	fmt.Fprintf(os.Stderr, "%+v", dsi)
 
 	var queries []Query
 	for _, q := range req.Queries {

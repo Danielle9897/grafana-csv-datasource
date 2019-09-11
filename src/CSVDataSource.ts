@@ -1,3 +1,6 @@
+import { DataQueryRequest, DataQueryResponse, DataSourceApi, DataSourceInstanceSettings } from '@grafana/ui';
+import { CSVQuery, CSVOptions } from './types';
+
 import _ from 'lodash';
 
 interface Request {
@@ -6,25 +9,21 @@ interface Request {
   to?: string;
 }
 
-export class GenericDatasource {
-  id: string;
-  path: string;
+const url = 'http://localhost:3000/api/tsdb/query';
 
-  /** @ngInject */
-  constructor(instanceSettings: any, $q: any, private backendSrv: any, private templateSrv: any) {
-    this.path = instanceSettings.path;
-    this.id = instanceSettings.id;
+export class CSVDataSource extends DataSourceApi<CSVQuery, CSVOptions> {
+  constructor(instanceSettings: DataSourceInstanceSettings<CSVOptions>) {
+    super(instanceSettings);
   }
 
-  query(options: any) {
-    console.log(this.path);
-    const targets = _.map(options.targets, (target: any) => {
+  query(options: DataQueryRequest<CSVQuery>): Promise<DataQueryResponse> {
+    const targets = options.targets.map((target: any) => {
       return {
         queryType: 'query',
-        target: this.templateSrv.replace(target.target, options.scopedVars, 'regex'),
+        target: target.target,
         refId: target.refId,
         hide: target.hide,
-        type: target.type || 'timeserie',
+        type: target.type,
         datasourceId: this.id,
       };
     });
@@ -37,16 +36,20 @@ export class GenericDatasource {
       requestData.from = options.range.from.valueOf().toString();
       requestData.to = options.range.to.valueOf().toString();
     }
+    console.log(requestData);
 
-    return this.backendSrv
-      .datasourceRequest({
-        url: '/api/tsdb/query',
-        method: 'POST',
-        data: requestData,
-      })
+    return fetch(url, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestData),
+    })
+      .then((response: any) => response.json())
       .then((response: any) => {
+        console.log(response);
         const res: any = [];
-        _.forEach(response.data.results, r => {
+        _.forEach(response.results, r => {
           _.forEach(r.series, s => {
             res.push({ target: s.name, datapoints: s.points });
           });
@@ -64,20 +67,23 @@ export class GenericDatasource {
   }
 
   testDatasource() {
-    return this.backendSrv
-      .datasourceRequest({
-        url: '/api/tsdb/query',
-        method: 'POST',
-        data: {
-          from: '5m',
-          to: 'now',
-          queries: [
-            {
-              datasourceId: this.id,
-            },
-          ],
+    const requestData = {
+      from: '5m',
+      to: 'now',
+      queries: [
+        {
+          datasourceId: this.id,
         },
-      })
+      ],
+    };
+
+    return fetch(url, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestData),
+    })
       .then((response: any) => {
         if (response.status === 200) {
           return { status: 'success', message: 'Data source is working', title: 'Success' };
@@ -89,8 +95,4 @@ export class GenericDatasource {
         return { status: 'failed', message: 'Data source is not working', title: 'Error' };
       });
   }
-
-  annotationQuery(options: any) {}
-
-  metricFindQuery(query: any) {}
 }

@@ -1,16 +1,15 @@
 {
   "id": "marcusolsson-my-plugin-datasource",
-  "name": "My Plugin",
+  "name": "CSV file",
   "type": "datasource",
 
   "metrics": true,
-  "annotations": false,
   "backend": true,
 
-  "executable": "my-plugin",
+  "executable": "csv-datasource",
 
   "info": {
-    "description": "My test plugin",
+    "description": "A datasource for loading CSV files",
     "author": {
       "name": "Marcus Olsson",
       "url": "https://marcus.se.net"

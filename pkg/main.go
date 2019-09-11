@@ -3,24 +3,34 @@ package main
 import (
 	"context"
 	"encoding/csv"
+	"encoding/json"
 	"log"
 	"os"
 	"strconv"
 	"time"
 
-	gf "github.com/marcusolsson/my-plugin/pkg/grafana"
+	gf "github.com/marcusolsson/grafana-csv-datasource/pkg/grafana"
 )
 
-type JsonDatasource struct {
+type CSVDatasource struct {
 	logger *log.Logger
 }
 
-func (d *JsonDatasource) ID() string {
-	return "my-backend-datasource"
+func (d *CSVDatasource) ID() string {
+	return "marcusolsson-csv-datasource"
 }
 
-func (d *JsonDatasource) Query(ctx context.Context, tr gf.TimeRange, ds gf.Datasource, queries []gf.Query) ([]gf.QueryResult, error) {
-	f, err := os.Open("/tmp/sample.csv")
+type JsonOptions struct {
+	Path string `json:"path"`
+}
+
+func (d *CSVDatasource) Query(ctx context.Context, tr gf.TimeRange, ds gf.Datasource, queries []gf.Query) ([]gf.QueryResult, error) {
+	var opts JsonOptions
+	if err := json.Unmarshal(ds.JsonData, &opts); err != nil {
+		return nil, err
+	}
+
+	f, err := os.Open(opts.Path)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +79,7 @@ func main() {
 
 	g := gf.New()
 
-	g.Register(&JsonDatasource{
+	g.Register(&CSVDatasource{
 		logger: logger,
 	})
 
