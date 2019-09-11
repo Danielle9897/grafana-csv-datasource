@@ -1,0 +1,27 @@
+{
+  "id": "marcusolsson-my-plugin-datasource",
+  "name": "My Plugin",
+  "type": "datasource",
+
+  "metrics": true,
+  "annotations": false,
+  "backend": true,
+
+  "executable": "my-plugin",
+
+  "info": {
+    "description": "My test plugin",
+    "author": {
+      "name": "Marcus Olsson",
+      "url": "https://marcus.se.net"
+    },
+    "keywords": [],
+    "version": "1.0.0",
+    "updated": "2019-09-10"
+  },
+
+  "dependencies": {
+    "grafanaVersion": "3.x.x",
+    "plugins": []
+  }
+}

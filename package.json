@@ -1,0 +1,20 @@
+{
+  "name": "my-plugin",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "grafana-toolkit plugin:build",
+    "test": "grafana-toolkit plugin:test",
+    "dev": "grafana-toolkit plugin:dev",
+    "watch": "grafana-toolkit plugin:dev --watch"
+  },
+  "author": "Marcus Olsson",
+  "license": "MIT",
+  "devDependencies": {
+    "@grafana/data": "latest",
+    "@grafana/toolkit": "next",
+    "@grafana/ui": "latest",
+    "@types/grafana": "github:CorpGlory/types-grafana.git",
+    "@types/lodash": "^4.14.138",
+    "lodash": "^4.17.15"
+  }
+}
