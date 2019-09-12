@@ -90,3 +90,45 @@ Restart Grafana and verify that your plugin is running:
 ```
 $ ps aux | grep csv-datasource
 ```
+
+## Calling the backend from the client
+
+Let's make the `testDatasource` call our backend to make sure it's responding correctly.
+
+```ts
+// src/CSVDataSource.ts
+
+testDatasource() {
+  const requestData = {
+    from: '5m',
+    to: 'now',
+    queries: [
+      {
+        datasourceId: this.id,
+      },
+    ],
+  };
+
+  const url = 'http://localhost:3000/api/tsdb/query'
+
+  return fetch(url, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestData),
+  })
+    .then((response: any) => {
+      if (response.status === 200) {
+        return { status: 'success', message: 'Data source is working', title: 'Success' };
+      } else {
+        return { status: 'failed', message: 'Data source is not working', title: 'Error' };
+      }
+    })
+    .catch((error: any) => {
+      return { status: 'failed', message: 'Data source is not working', title: 'Error' };
+    });
+}
+```
+
+Confirm that the client is able to call our backend plugin by hitting **Save & Test** on your data source. It should give you a green message saying _Data source is working_.
