@@ -88,5 +88,5 @@ Where the executable is the name of the binary, with the suffix removed.
 Restart Grafana and verify that your plugin is running:
 
 ```
-$ ps aux | grep cdv-datasource
+$ ps aux | grep csv-datasource
 ```
