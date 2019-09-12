@@ -109,6 +109,7 @@ testDatasource() {
     ],
   };
 
+  // How to avoid hard-coding the URL?
   const url = 'http://localhost:3000/api/tsdb/query'
 
   return fetch(url, {
