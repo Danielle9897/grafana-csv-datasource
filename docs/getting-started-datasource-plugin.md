@@ -156,7 +156,7 @@ As an exercise, try changing the message returned by  `testDatasource` , rebuild
 
 For most data sources, you’ll want to give your users the ability to configure things like hostname or authentication method. Although our CSV example doesn’t require authentication at this point, we might want to configure the path to the CSV file. We can accomplish this by adding a _options editor_.
 
-```ts
+```tsx
 // src/CSVConfigEditor.tsx
 import React, { PureComponent, ChangeEvent } from 'react';
 
@@ -217,3 +217,58 @@ export const plugin = new DataSourcePlugin<CSVDataSource, CSVQuery, CSVOptions>(
 ```
 
 Build your assets, restart Grafana, and check out the configuration for our data source. There should now be a text field where you can configure the path.
+
+## Querying your data source
+
+Most likely you want your users to be able to select the data they're interested in. For MySQL and PostreSQL this would be SQL queries, while Prometheus has their own query language, called PromQL. Let's add query support for our plugin, using a custom _query editor_.
+
+There's a lot we can do when it comes to querying CSV data, like filtering rows based on a time range of one of the fields. Let's keep it simple for now by letting the user supply a comma separated list of fields to visualize.
+
+Create a new ReactJS component called `CSVQueryEditor`, and have it return a `FormField` from the `@grafana/ui` package.
+
+```tsx
+// src/CSVQueryEditor.tsx
+import React, { PureComponent } from 'react';
+
+import { FormField, QueryEditorProps } from '@grafana/ui';
+
+import { CSVDataSource } from './CSVDataSource';
+import { CSVQuery, CSVOptions } from './types';
+
+type Props = QueryEditorProps<CSVDataSource, CSVQuery, CSVOptions>;
+
+interface State {}
+
+export class CSVQueryEditor extends PureComponent<Props, State> {
+
+  onComponentDidMount() {}
+
+  render() {
+    return (
+      <div className="gf-form">
+          <FormField width={24} label='Fields'></FormField>
+      </div>
+    );
+  }
+}
+```
+
+Finally, let's configure our data source to use the query editor:
+
+```ts
+// src/module.ts
+import { DataSourcePlugin } from '@grafana/ui';
+
+import { CSVDataSource } from './CSVDataSource';
+import { CSVConfigEditor } from './CSVConfigEditor';
+import { CSVQueryEditor } from './CSVQueryEditor';
+import { CSVOptions, CSVQuery } from './types';
+
+export const plugin = new DataSourcePlugin<CSVDataSource, CSVQuery, CSVOptions>(CSVDataSource)
+  .setConfigEditor(CSVConfigEditor)
+  .setQueryEditor(CSVQueryEditor);
+```
+
+When configuring your panel, you should have something like this:
+
+![Query editor](./query-editor.png)
