@@ -272,3 +272,7 @@ export const plugin = new DataSourcePlugin<CSVDataSource, CSVQuery, CSVOptions>(
 When configuring your panel, you should have something like this:
 
 ![Query editor](./query-editor.png)
+
+## Next up
+
+In the second part of this guide, we'll look at adding a backend plugin that will read and parse the CSV file, and return it as a Grafana _data frame_. Stay tuned!
