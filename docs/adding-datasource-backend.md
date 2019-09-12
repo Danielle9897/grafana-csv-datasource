@@ -78,12 +78,12 @@ Next, we'll have to let Grafana know it should look for a backend plugin by upda
 ```json
 // src/plugin.json
 {
-  ...
+  // ...
 
   "backend": true,
   "executable": "csv-datasource",
 
-  ...
+  // ...
 }
 ```
 
