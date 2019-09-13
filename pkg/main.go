@@ -14,14 +14,6 @@ import (
 	gf "github.com/marcusolsson/grafana-csv-datasource/pkg/grafana"
 )
 
-type CSVDatasource struct {
-	logger *log.Logger
-}
-
-func (d *CSVDatasource) ID() string {
-	return "marcusolsson-csv-datasource"
-}
-
 type CSVQuery struct {
 	RefID  string `json:"refId"`
 	Fields string `json:"fields"`
@@ -29,6 +21,14 @@ type CSVQuery struct {
 
 type CSVOptions struct {
 	Path string `json:"path"`
+}
+
+type CSVDatasource struct {
+	logger *log.Logger
+}
+
+func (d *CSVDatasource) ID() string {
+	return "marcusolsson-csv-datasource"
 }
 
 func (d *CSVDatasource) Query(ctx context.Context, tr gf.TimeRange, ds gf.Datasource, queries []gf.Query) ([]gf.QueryResult, error) {
