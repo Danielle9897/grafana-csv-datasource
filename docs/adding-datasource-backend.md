@@ -98,8 +98,17 @@ Let's make the `testDatasource` call our backend to make sure it's responding co
 ```ts
 // src/CSVDataSource.ts
 
+// Is this necessary? Maybe should be part of @grafana/ui?
+interface Request {
+  queries: any[];
+  from?: string;
+  to?: string;
+}
+
+...
+
 testDatasource() {
-  const requestData = {
+  const requestData: Request = {
     from: '5m',
     to: 'now',
     queries: [
@@ -133,3 +142,61 @@ testDatasource() {
 ```
 
 Confirm that the client is able to call our backend plugin by hitting **Save & Test** on your data source. It should give you a green message saying _Data source is working_.
+
+Now that all the plumbing is done, let's start implementing the query method for both the frontend, and the backend plugins.
+
+```
+query(options: DataQueryRequest<CSVQuery>): Promise<DataQueryResponse> {
+
+  // Is this needed? Could this be simplified?
+  const queries = options.targets.map((target: any) => {
+    return {
+      queryType: 'query',
+      target: target.target,
+      refId: target.refId,
+      hide: target.hide,
+      type: target.type,
+      datasourceId: this.id,
+    };
+  });
+
+  const requestData: Request = {
+    queries: queries,
+  };
+
+  if (options.range) {
+    requestData.from = options.range.from.valueOf().toString();
+    requestData.to = options.range.to.valueOf().toString();
+  }
+
+  return fetch(url, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestData),
+  })
+    .then((response: any) => response.json())
+    .then((response: any) => {
+      const res: any = [];
+
+      // This will be look better once backend starts returning data frames.
+      _.forEach(response.results, r => {
+        _.forEach(r.series, s => {
+          res.push({ target: s.name, datapoints: s.points });
+        });
+        _.forEach(r.tables, t => {
+          t.type = 'table';
+          t.refId = r.refId;
+          res.push(t);
+        });
+      });
+
+      response.data = res;
+
+      return response;
+    });
+}
+```
+
+That's it for the frontend! Next, let's have a look at implementing the backend.
