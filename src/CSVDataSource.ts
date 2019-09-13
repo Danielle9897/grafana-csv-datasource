@@ -48,7 +48,6 @@ export class CSVDataSource extends DataSourceApi<CSVQuery, CSVOptions> {
     })
       .then((response: any) => response.json())
       .then((response: any) => {
-        console.log(response);
         const res: any = [];
         _.forEach(response.results, r => {
           _.forEach(r.series, s => {
@@ -62,7 +61,7 @@ export class CSVDataSource extends DataSourceApi<CSVQuery, CSVOptions> {
         });
 
         response.data = res;
-        console.log(res);
+
         return response;
       });
   }
