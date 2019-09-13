@@ -1,5 +1,5 @@
 {
-  "id": "marcusolsson-my-plugin-datasource",
+  "id": "marcusolsson-csv-datasource",
   "name": "CSV file",
   "type": "datasource",
 
