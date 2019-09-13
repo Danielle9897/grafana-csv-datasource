@@ -1,7 +1,7 @@
 {
-  "id": "marcusolsson-csv-datasource",
-  "name": "CSV file",
   "type": "datasource",
+  "name": "CSV file",
+  "id": "marcusolsson-csv-datasource",
 
   "metrics": true,
   "backend": true,
