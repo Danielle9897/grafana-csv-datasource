@@ -1,32 +1,29 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, ChangeEvent } from 'react';
+
+import { FormField, QueryEditorProps } from '@grafana/ui';
 
 import { CSVDataSource } from './CSVDataSource';
 import { CSVQuery, CSVOptions } from './types';
 
-import { FormLabel, Select, QueryEditorProps } from '@grafana/ui';
-
 type Props = QueryEditorProps<CSVDataSource, CSVQuery, CSVOptions>;
-
-const options = [{ value: 'timestamp', label: 'timestamp' }, { value: 'value', label: 'value' }];
 
 interface State {}
 
 export class CSVQueryEditor extends PureComponent<Props, State> {
-  state = {
-    text: '',
-  };
-
   onComponentDidMount() {}
 
+  onFieldsChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { onChange, query } = this.props;
+    onChange({ ...query, fields: event.target.value });
+  };
+
   render() {
-    const selected = options[0];
+    const { query } = this.props;
+    const { fields } = query;
 
     return (
-      <div>
-        <div className="gf-form">
-          <FormLabel width={4}>Fields</FormLabel>
-          <Select width={12} options={options} value={selected} />
-        </div>
+      <div className="gf-form">
+        <FormField width={24} value={fields} onChange={this.onFieldsChange} label="Fields"></FormField>
       </div>
     );
   }

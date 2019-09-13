@@ -40,7 +40,7 @@ type Query struct {
 	RefID         string
 	MaxDataPoints int64
 	Interval      time.Duration
-	ModelJson     string
+	ModelJson     json.RawMessage
 }
 
 type QueryResult struct {
@@ -63,6 +63,8 @@ type datasourcePlugin struct {
 }
 
 func (p *datasourcePlugin) Query(ctx context.Context, req *datasource.DatasourceRequest) (*datasource.DatasourceResponse, error) {
+	fmt.Fprintln(os.Stderr, "%+v", req)
+
 	tr := TimeRange{
 		From: time.Unix(0, req.TimeRange.FromEpochMs*int64(time.Millisecond)),
 		To:   time.Unix(0, req.TimeRange.FromEpochMs*int64(time.Millisecond)),
@@ -83,7 +85,7 @@ func (p *datasourcePlugin) Query(ctx context.Context, req *datasource.Datasource
 			RefID:         q.RefId,
 			MaxDataPoints: q.MaxDataPoints,
 			Interval:      time.Duration(q.IntervalMs) * time.Millisecond,
-			ModelJson:     q.ModelJson,
+			ModelJson:     []byte(q.ModelJson),
 		})
 	}
 

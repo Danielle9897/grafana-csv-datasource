@@ -1,8 +1,7 @@
 import React, { PureComponent, ChangeEvent } from 'react';
 
-import { CSVOptions } from './types';
-
 import { DataSourcePluginOptionsEditorProps, DataSourceSettings, FormField } from '@grafana/ui';
+import { CSVOptions } from './types';
 
 type CSVSettings = DataSourceSettings<CSVOptions>;
 

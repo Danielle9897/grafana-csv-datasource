@@ -1,7 +1,7 @@
+import _ from 'lodash';
+
 import { DataQueryRequest, DataQueryResponse, DataSourceApi, DataSourceInstanceSettings } from '@grafana/ui';
 import { CSVQuery, CSVOptions } from './types';
-
-import _ from 'lodash';
 
 interface Request {
   queries: any[];
@@ -17,26 +17,20 @@ export class CSVDataSource extends DataSourceApi<CSVQuery, CSVOptions> {
   }
 
   query(options: DataQueryRequest<CSVQuery>): Promise<DataQueryResponse> {
-    const targets = options.targets.map((target: any) => {
-      return {
-        queryType: 'query',
-        target: target.target,
-        refId: target.refId,
-        hide: target.hide,
-        type: target.type,
-        datasourceId: this.id,
-      };
-    });
-
     const requestData: Request = {
-      queries: targets,
+      queries: options.targets.map((target: any) => {
+        return {
+          datasourceId: this.id,
+          refId: target.refId,
+          fields: target.fields,
+        };
+      }),
     };
 
     if (options.range) {
       requestData.from = options.range.from.valueOf().toString();
       requestData.to = options.range.to.valueOf().toString();
     }
-    console.log(requestData);
 
     return fetch(url, {
       method: 'post',
@@ -67,7 +61,7 @@ export class CSVDataSource extends DataSourceApi<CSVQuery, CSVOptions> {
   }
 
   testDatasource() {
-    const requestData = {
+    const requestData: Request = {
       from: '5m',
       to: 'now',
       queries: [
