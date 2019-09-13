@@ -1,7 +1,14 @@
 import _ from 'lodash';
 
-import { DataQueryRequest, DataQueryResponse, DataSourceApi, DataSourceInstanceSettings } from '@grafana/ui';
-import { CSVQuery, CSVOptions } from './types';
+import { DataQueryRequest, DataQueryResponse, DataSourceApi, DataSourceInstanceSettings, DataQuery, DataSourceJsonData } from '@grafana/ui';
+
+export interface CSVQuery extends DataQuery {
+  fields?: string;
+}
+
+export interface CSVOptions extends DataSourceJsonData {
+  path?: string;
+}
 
 interface Request {
   queries: any[];

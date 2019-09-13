@@ -1,7 +1,8 @@
 import React, { PureComponent, ChangeEvent } from 'react';
 
 import { DataSourcePluginOptionsEditorProps, DataSourceSettings, FormField } from '@grafana/ui';
-import { CSVOptions } from './types';
+
+import { CSVOptions } from './CSVDataSource';
 
 type CSVSettings = DataSourceSettings<CSVOptions>;
 
@@ -10,8 +11,6 @@ interface Props extends DataSourcePluginOptionsEditorProps<CSVSettings> {}
 interface State {}
 
 export class CSVConfigEditor extends PureComponent<Props, State> {
-  state = {};
-
   componentDidMount() {}
 
   onPathChange = (event: ChangeEvent<HTMLInputElement>) => {
