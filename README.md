@@ -6,7 +6,7 @@ __Note:__ This repository exists for experimental purposes only, and is currentl
 
 ## Directory structure
 
-`pkg` holds the source code for the backend plugin (Go).
+`cmd/backend` holds the source code for the backend plugin (Go).
 
 `src` holds the source code for the frontend plugin (Typescript).
 

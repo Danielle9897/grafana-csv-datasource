@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	gf "github.com/marcusolsson/grafana-csv-datasource/pkg/grafana"
+	gf "github.com/marcusolsson/grafana-csv-datasource/cmd/backend/grafana"
 )
 
 type CSVQuery struct {
@@ -42,14 +42,16 @@ func (d *CSVDatasource) Query(ctx context.Context, tr gf.TimeRange, ds gf.Dataso
 	for _, q := range queries {
 		var query CSVQuery
 		if err := json.Unmarshal(q.ModelJson, &query); err != nil {
-			return nil, err
+			d.logger.Println(err)
+			continue
 		}
 
 		fields := strings.Split(query.Fields, ",")
 
 		frame, err := parseCSV(opts.Path, fields)
 		if err != nil {
-			return nil, err
+			d.logger.Println(err)
+			continue
 		}
 
 		res = append(res, gf.QueryResult{
