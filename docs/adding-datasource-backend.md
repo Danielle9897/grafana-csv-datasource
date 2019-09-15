@@ -23,7 +23,7 @@ import (
 	"log"
 	"os"
 
-	gf "github.com/github.com/marcusolsson/grafana-csv-datasource/pkg/grafana"
+	gf "github.com/github.com/marcusolsson/grafana-csv-datasource/cmd/backend/grafana"
 )
 
 type CSVDatasource struct {
@@ -78,7 +78,6 @@ Next, we'll have to let Grafana know it should look for a backend plugin by upda
 ```json
 // src/plugin.json
 {
-  "backend": true,
   "executable": "csv-datasource",
 }
 ```
@@ -247,6 +246,6 @@ _Note:_ I've left the implementation for `parseCSV` out of this article for brev
 That's it! If you've made it this far, you should have a fully fledged data source plugin for Grafana, complete with backend support. You should have a pretty good feeling of where to change the implementation to support your own data source, but here are a few pointers:
 
 - Update `CSVConfigEditor` to expose the configuration options for your specific data source.
-- Update `CSVQueryEditor` to support the query model used to fetch data from your data source. 
+- Update `CSVQueryEditor` to support the query model used to fetch data from your data source.
 - Construct the query inside `CSVDataSource.query` in the frontend.
 - Implement the `CSVDatasource.Query` in the backend to make the outgoing requests to your data source.
