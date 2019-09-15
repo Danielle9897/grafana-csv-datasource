@@ -29,7 +29,7 @@ export class CSVConfigEditor extends PureComponent<Props, State> {
     return (
       <div className="gf-form-group">
         <div className="gf-form">
-          <FormField label="Path" labelWidth={6} onChange={this.onPathChange} value={jsonData.path} placeholder="Path to CSV file" />
+          <FormField label="Path" value={jsonData.path || ''} onChange={this.onPathChange} />
         </div>
       </div>
     );

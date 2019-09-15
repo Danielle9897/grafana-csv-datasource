@@ -73,6 +73,8 @@ export class CSVDataSource extends DataSourceApi<CSVQuery, CSVOptions> {
       queries: [
         {
           datasourceId: this.id,
+          refId: target.refId,
+          fields: target.fields,
         },
       ],
     };

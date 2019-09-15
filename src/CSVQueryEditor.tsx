@@ -22,7 +22,7 @@ export class CSVQueryEditor extends PureComponent<Props, State> {
 
     return (
       <div className="gf-form">
-        <FormField width={24} value={fields} onChange={this.onFieldsChange} label="Fields"></FormField>
+        <FormField label="Fields" value={fields || ''} onChange={this.onFieldsChange} />
       </div>
     );
   }
