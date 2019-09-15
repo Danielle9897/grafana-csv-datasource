@@ -82,33 +82,24 @@ We also need a `module.ts` file that’s going to configure and export our data 
 // src/module.ts
 import { DataSourcePlugin } from '@grafana/ui';
 
-import { CSVDataSource } from './CSVDataSource';
-import { CSVOptions, CSVQuery } from './types';
+import { CSVDataSource, CSVOptions, CSVQuery } from './CSVDataSource';
 
 export const plugin = new DataSourcePlugin<CSVDataSource, CSVQuery, CSVOptions>(CSVDataSource);
 ```
 
 ### Defining our data source
 
-As you may have noticed in our  `module.ts`, we need to provide our data source implementation, as well as definitions for _queries_ and _options_. We'll update these along the way, but for now, let's settle with just the definitions.
+Let's create the actual implementation for the data source. At this point, it's not doing much, but we'll make sure to change that in a bit.
 
 ```ts
-// src/types.ts
-import { DataQuery, DataSourceJsonData } from '@grafana/ui';
+// src/CSVDataSource.ts
+import { DataQueryRequest, DataQueryResponse, DataSourceApi, DataSourceInstanceSettings, DataQuery, DataSourceJsonData } from '@grafana/ui';
 
 export interface CSVQuery extends DataQuery {
 }
 
 export interface CSVOptions extends DataSourceJsonData {
 }
-```
-
-Next, let's create the actual implementation for the data source. At this point, it's not doing much, but we'll make sure to change that in a bit.
-
-```ts
-// src/CSVDataSource.ts
-import { DataQueryRequest, DataQueryResponse, DataSourceApi, DataSourceInstanceSettings } from '@grafana/ui';
-import { CSVQuery, CSVOptions } from './types';
 
 export class CSVDataSource extends DataSourceApi<CSVQuery, CSVOptions> {
   constructor(instanceSettings: DataSourceInstanceSettings<CSVOptions>) {
@@ -130,6 +121,8 @@ export class CSVDataSource extends DataSourceApi<CSVQuery, CSVOptions> {
 }
 ```
 
+As you may have noticed in our  `module.ts`, we need to provide our data source implementation, as well as definitions for _queries_ and _options_. We'll update these along the way, but for now, let's settle with just the definitions.
+
 By now, you should be able to run `grafana-toolkit plugin:build` successfully. After doing this, you will have a directory called `dist` that contains the production assets for your plugin. The toolkit also generated a `.prettierrc.js` and a `tsconfig.json` that will help you follow the conventions used for Grafana.
 
 ## Trying out our new plugin
@@ -144,9 +137,7 @@ By doing this you can test new changes by restarting Grafana.
 
 Let's see if our plugin gets picked up by Grafana! Open Grafana in your browser, and navigate to Configuration -> Plugins, and type "csv" to find your plugin. The details view gives your users instructions on how to use the plugin.
 
-Next, navigate to Configuration -> Data Sources, type "csv", and select your data source. For now, this view is going not going to show much, but we should still be able to click the "Save & Test" button. Hopefully, you see the message we configured in `testDatasource`.
-
-Congrats!
+Next, navigate to Configuration -> Data Sources, type "csv", and select your data source. For now, this view is going not going to show much, but we should still be able to click the "Save & Test" button. Hopefully, you see the message we configured in `testDatasource`. Success!
 
 ## Development workflow
 
@@ -161,7 +152,8 @@ For most data sources, you'll want to give your users the ability to configure t
 import React, { PureComponent, ChangeEvent } from 'react';
 
 import { DataSourcePluginOptionsEditorProps, DataSourceSettings, FormField } from '@grafana/ui';
-import { CSVOptions } from './types';
+
+import { CSVOptions } from './CSVDataSource';
 
 type CSVSettings = DataSourceSettings<CSVOptions>;
 
@@ -170,8 +162,6 @@ interface Props extends DataSourcePluginOptionsEditorProps<CSVSettings> {}
 interface State {}
 
 export class CSVConfigEditor extends PureComponent<Props, State> {
-  state = {};
-
   componentDidMount() {}
 
   onPathChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -190,7 +180,7 @@ export class CSVConfigEditor extends PureComponent<Props, State> {
     return (
       <div className="gf-form-group">
         <div className="gf-form">
-          <FormField label="Path" labelWidth={6} onChange={this.onPathChange} value={jsonData.path} placeholder="Path to CSV file" />
+          <FormField label="Path" value={jsonData.path || ''} onChange={this.onPathChange} />
         </div>
       </div>
     );
@@ -220,7 +210,7 @@ Build your assets, restart Grafana, and check out the configuration for our data
 
 ## Querying your data source
 
-Most likely you want your users to be able to select the data they're interested in. For MySQL and PostreSQL this would be SQL queries, while Prometheus has its own query language, called PromQL. Let's add query support for our plugin, using a custom _query editor_.
+Most likely you want your users to be able to select the data they're interested in. For MySQL and PostgreSQL this would be SQL queries, while Prometheus has its own query language, called PromQL. Let's add query support for our plugin, using a custom _query editor_.
 
 There's a lot we can do when it comes to querying CSV data, like filtering rows based on a time range of one of the fields. Let's keep it simple for now by letting the user supply a comma separated list of fields to visualize.
 
@@ -228,25 +218,31 @@ Create a new ReactJS component called `CSVQueryEditor`, and have it return a `Fo
 
 ```tsx
 // src/CSVQueryEditor.tsx
-import React, { PureComponent } from 'react';
+import React, { PureComponent, ChangeEvent } from 'react';
 
 import { FormField, QueryEditorProps } from '@grafana/ui';
 
-import { CSVDataSource } from './CSVDataSource';
-import { CSVQuery, CSVOptions } from './types';
+import { CSVDataSource, CSVQuery, CSVOptions } from './CSVDataSource';
 
 type Props = QueryEditorProps<CSVDataSource, CSVQuery, CSVOptions>;
 
 interface State {}
 
 export class CSVQueryEditor extends PureComponent<Props, State> {
-
   onComponentDidMount() {}
 
+  onFieldsChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { onChange, query } = this.props;
+    onChange({ ...query, fields: event.target.value });
+  };
+
   render() {
+    const { query } = this.props;
+    const { fields } = query;
+
     return (
       <div className="gf-form">
-          <FormField width={24} label='Fields'></FormField>
+        <FormField label="Fields" value={fields || ''} onChange={this.onFieldsChange} />
       </div>
     );
   }

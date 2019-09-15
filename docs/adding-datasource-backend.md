@@ -147,21 +147,14 @@ Now that all the plumbing is done, let's start implementing the query method for
 
 ```
 query(options: DataQueryRequest<CSVQuery>): Promise<DataQueryResponse> {
-
-  // Is this needed? Could this be simplified?
-  const queries = options.targets.map((target: any) => {
-    return {
-      queryType: 'query',
-      target: target.target,
-      refId: target.refId,
-      hide: target.hide,
-      type: target.type,
-      datasourceId: this.id,
-    };
-  });
-
   const requestData: Request = {
-    queries: queries,
+    queries: options.targets.map((target: any) => {
+      return {
+        datasourceId: this.id,
+        refId: target.refId,
+        fields: target.fields,
+      };
+    }),
   };
 
   if (options.range) {
@@ -179,8 +172,6 @@ query(options: DataQueryRequest<CSVQuery>): Promise<DataQueryResponse> {
     .then((response: any) => response.json())
     .then((response: any) => {
       const res: any = [];
-
-      // This will be look better once backend starts returning data frames.
       _.forEach(response.results, r => {
         _.forEach(r.series, s => {
           res.push({ target: s.name, datapoints: s.points });
