@@ -96,16 +96,6 @@ Let's make the `testDatasource` call our backend to make sure it's responding co
 
 ```ts
 // src/CSVDataSource.ts
-
-// Is this necessary? Maybe should be part of @grafana/ui?
-interface Request {
-  queries: any[];
-  from?: string;
-  to?: string;
-}
-
-...
-
 testDatasource() {
   const requestData: Request = {
     from: '5m',
@@ -117,16 +107,8 @@ testDatasource() {
     ],
   };
 
-  // How to avoid hard-coding the URL?
-  const url = 'http://localhost:3000/api/tsdb/query'
-
-  return fetch(url, {
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(requestData),
-  })
+  return getBackendSrv()
+    .post('/api/tsdb/query', requestData)
     .then((response: any) => {
       if (response.status === 200) {
         return { status: 'success', message: 'Data source is working', title: 'Success' };
@@ -137,6 +119,22 @@ testDatasource() {
     .catch((error: any) => {
       return { status: 'failed', message: 'Data source is not working', title: 'Error' };
     });
+}
+```
+
+`getBackendSrv` is a function that returns runtime information about the Grafana backend. You can get it from the @grafana/runtime module by running `yarn add @grafana/runtime --dev`, and importing it.
+
+```
+import { getBackendSrv } from '@grafana/runtime';
+```
+
+You will also need to define the request to the backend. We'll keep it simple for now.
+
+```
+interface Request {
+  queries: any[];
+  from?: string;
+  to?: string;
 }
 ```
 

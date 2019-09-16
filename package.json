@@ -11,6 +11,7 @@
   "license": "MIT",
   "devDependencies": {
     "@grafana/data": "latest",
+    "@grafana/runtime": "latest",
     "@grafana/toolkit": "next",
     "@grafana/ui": "latest",
     "@types/grafana": "github:CorpGlory/types-grafana.git",

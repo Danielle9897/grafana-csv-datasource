@@ -723,6 +723,14 @@
   resolved "https://registry.yarnpkg.com/@grafana/data/-/data-6.3.2.tgz#9e2efe345a9d941247fb373ba5142a1c70911446"
   integrity sha512-2i0qVvjpeCq1yUMj8q4AgU/Mx5qiRwnex4Qvelt2zL/ADZI3n9rHIV8RF59N3ur+/+22KuzU3WJkqUK21QSuyg==
 
+"@grafana/runtime@latest":
+  version "6.3.2"
+  resolved "https://registry.yarnpkg.com/@grafana/runtime/-/runtime-6.3.2.tgz#0ef107cb3cfbe3b7961493eef3471a6e3e8c5757"
+  integrity sha512-687Zyr8u8gGWM4zcVi43JZDIMhkLXXpgEk/MDzEUAn3DSECRUaKaWsE/xM+LGkFJ6o3gO/AlsgAo2TAeAJ/ubA==
+  dependencies:
+    systemjs "0.20.19"
+    systemjs-plugin-css "0.1.37"
+
 "@grafana/toolkit@next":
   version "6.4.0-alpha.44-2c5d1745c"
   resolved "https://registry.yarnpkg.com/@grafana/toolkit/-/toolkit-6.4.0-alpha.44-2c5d1745c.tgz#0868fccdb6753842cd2ae5b68ad9a9af6a9e7159"
@@ -9032,6 +9040,16 @@ symbol-tree@^3.2.2:
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/symbol-tree/-/symbol-tree-3.2.4.tgz#430637d248ba77e078883951fb9aa0eed7c63fa2"
   integrity sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==
+
+systemjs-plugin-css@0.1.37:
+  version "0.1.37"
+  resolved "https://registry.yarnpkg.com/systemjs-plugin-css/-/systemjs-plugin-css-0.1.37.tgz#684847252ca69b7da24a1201094c86274324e82f"
+  integrity sha512-wCGG62zYXuOlNji5FlBjeMFAnLeAO/HQmFg+8UBX/mlHoAKLHlGFYRstlhGKibRU2oxk/BH9DaihOuhhNLi7Kg==
+
+systemjs@0.20.19:
+  version "0.20.19"
+  resolved "https://registry.yarnpkg.com/systemjs/-/systemjs-0.20.19.tgz#c2b9e79c19f4bea53a19b1ed3f974ffb463be949"
+  integrity sha512-H/rKwNEEyej/+IhkmFNmKFyJul8tbH/muiPq5TyNoVTwsGhUjRsN3NlFnFQUvFXA3+GQmsXkCNXU6QKPl779aw==
 
 tapable@^1.0.0, tapable@^1.1.0:
   version "1.1.3"
